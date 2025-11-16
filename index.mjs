@@ -1,9 +1,9 @@
-import WebSocket from "ws";
+import { WebSocketServer } from "ws";
 import dotenv from "dotenv";
 dotenv.config();
 
 const PORT = process.env.PORT || 8080;
-const wss = new WebSocket.Server({ port: PORT });
+const wss = new WebSocketServer({ port: PORT });
 
 console.log(`🎙️ Scout Voice Activation running on port ${PORT}`);
 
