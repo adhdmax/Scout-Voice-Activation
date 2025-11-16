@@ -1,0 +1,16 @@
+package.json
+{
+  "name": "scout-voice-activation",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "index.mjs",
+  "scripts": {
+    "start": "node index.mjs"
+  },
+  "dependencies": {
+    "ws": "^8.18.0",
+    "dotenv": "^16.4.0"
+  }
+}
+
+
