@@ -21,6 +21,32 @@ const server = http.createServer((req, res) => {
       res.end("404 Not Found");
     } else {
       const ext = path.extname(filePath).toLowerCase();
-      const cont
+      const contentType =
+        ext === ".html" ? "text/html" :
+        ext === ".js" ? "text/javascript" :
+        ext === ".css" ? "text/css" :
+        "text/plain";
+      res.writeHead(200, { "Content-Type": contentType });
+      res.end(data);
+    }
+  });
+});
 
-  
+// WebSocket setup
+const wss = new WebSocketServer({ server });
+
+wss.on("connection", (ws) => {
+  console.log("✅ Client connected");
+  ws.send("👋 Hello from Scout!");
+  ws.on("message", (msg) => {
+    console.log("🗣️ Received:", msg.toString());
+    ws.send(`🔊 Scout heard: "${msg.toString()}"`);
+  });
+  ws.on("close", () => console.log("❌ Client disconnected"));
+});
+
+// Start server
+server.listen(PORT, () => {
+  console.log(`🎙️ Scout Voice Activation ready at http://localhost:${PORT}`);
+});
+
