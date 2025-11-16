@@ -1,4 +1,3 @@
-index.mjs
 import WebSocket from "ws";
 import dotenv from "dotenv";
 dotenv.config();
@@ -20,3 +19,4 @@ wss.on("connection", (ws) => {
     console.log("Client disconnected");
   });
 });
+
