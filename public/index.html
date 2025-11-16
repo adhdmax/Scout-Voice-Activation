@@ -22,7 +22,7 @@
     ws.onmessage = (m) => log(m.data);
 
     document.getElementById("talkBtn").onclick = async () => {
-      const rec = new webkitSpeechRecognition() || new SpeechRecognition();
+      const rec = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
       rec.lang = "en-GB";
       rec.start();
       rec.onresult = e => {
