@@ -8,35 +8,30 @@ import { fileURLToPath } from "url";
 dotenv.config();
 const PORT = process.env.PORT || 8080;
 
-// Serve static files (like index.html)
+// Define file paths
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const publicPath = path.join(__dirname, "public");
+
+// Serve static files first
 const server = http.createServer((req, res) => {
-  const filePath =
-    req.url === "/" ? path.join(__dirname, "public", "index.html") : path.join(__dirname, req.url);
+  let filePath = path.join(publicPath, req.url === "/" ? "index.html" : req.url);
   fs.readFile(filePath, (err, data) => {
     if (err) {
-      res.writeHead(404);
+      res.writeHead(404, { "Content-Type": "text/plain" });
       res.end("Not Found");
     } else {
-      res.writeHead(200);
+      const ext = path.extname(filePath);
+      const type = ext === ".html" ? "text/html" :
+                   ext === ".js" ? "text/javascript" :
+                   "text/plain";
+      res.writeHead(200, { "Content-Type": type });
       res.end(data);
     }
   });
 });
 
-// WebSocket layer
+// Start WebSocket *after* the HTTP server
 const wss = new WebSocketServer({ server });
 
 wss.on("connection", (ws) => {
-  console.log("Client connected");
-  ws.on("message", (msg) => {
-    console.log("🗣️ Received:", msg.toString());
-    ws.send(`🔊 Scout heard: "${msg.toString()}"`);
-  });
-  ws.on("close", () => console.log("Client disconnected"));
-});
-
-// Start combined server
-server.listen(PORT, () => {
-  console.log(`🎙️ Scout Voice Activation ready at http://localhost:${PORT}`);
-});
+  console.log("Cli
