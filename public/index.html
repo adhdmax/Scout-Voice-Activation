@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>🎙️ Scout Voice Activation</title>
+  <style>
+    body { font-family: system-ui; display:flex; flex-direction:column; align-items:center; margin-top:5em; }
+    button { font-size:1.2em; padding:1em 2em; margin:1em; border-radius:10px; border:none; background:#007AFF; color:white; cursor:pointer; }
+    #log { margin-top:2em; white-space:pre-wrap; font-size:1em; width:80%; text-align:left; }
+  </style>
+</head>
+<body>
+  <h1>🎧 Scout Voice Activation</h1>
+  <button id="talkBtn">🎙️ Talk to Scout</button>
+  <div id="log"></div>
+
+  <script>
+    const ws = new WebSocket("ws://localhost:8080");
+    const log = (msg) => document.getElementById("log").textContent += msg + "\n";
+
+    ws.onopen = () => log("Connected to Scout...");
+    ws.onmessage = (m) => log(m.data);
+
+    document.getElementById("talkBtn").onclick = async () => {
+      const rec = new webkitSpeechRecognition() || new SpeechRecognition();
+      rec.lang = "en-GB";
+      rec.start();
+      rec.onresult = e => {
+        const text = e.results[0][0].transcript;
+        log("🗣️ You said: " + text);
+        ws.send(text);
+      };
+    };
+  </script>
+</body>
+</html>
